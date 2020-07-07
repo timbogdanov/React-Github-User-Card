@@ -1,25 +1,12 @@
 import React from 'react';
-import axios from 'axios';
 
-class User extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      users: [],
-    };
-  }
-
-  componentDidMount() {
-    axios.get('https://api.github.com/users/timbogdanov').then((res) => {
-      this.setState({
-        users: res.data,
-      });
-    });
-  }
-
-  render() {
-    return <> </>;
-  }
-}
+const User = (props) => {
+  return (
+    <div>
+      <h2>{props.user.login}</h2>
+      <p>{props.user.bio}</p>
+    </div>
+  );
+};
 
 export default User;
