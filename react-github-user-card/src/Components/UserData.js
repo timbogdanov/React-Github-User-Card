@@ -7,35 +7,80 @@ class UserData extends React.Component {
   constructor() {
     super();
     this.state = {
-      user: {},
+      user: [],
       followers: [],
+      input: 'timbogdanov',
     };
   }
 
   componentDidMount() {
-    axios.get('https://api.github.com/users/timbogdanov').then((res) => {
-      this.setState({
-        user: res.data,
+    axios
+      .get(`https://api.github.com/users/${this.state.input}`)
+      .then((res) => {
+        this.setState({
+          user: res.data,
+        });
       });
-    });
 
     axios
-      .get('https://api.github.com/users/timbogdanov/followers')
+      .get(`https://api.github.com/users/${this.state.input}/followers`)
       .then((res) => {
-        console.log(res);
         this.setState({
           followers: res.data,
         });
       });
   }
+
+  handleInput = (e) => {
+    this.setState({
+      input: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    axios
+      .get(`https://api.github.com/users/${this.state.input}`)
+      .then((res) => {
+        this.setState({
+          user: res.data,
+        });
+      });
+
+    axios
+      .get(`https://api.github.com/users/${this.state.input}/followers`)
+      .then((res) => {
+        this.setState({
+          followers: res.data,
+        });
+      });
+  };
+
   render() {
     return (
-      <div>
-        <User user={this.state.user} />
+      <div className='userData'>
+        <form>
+          <input
+            className='searchInput'
+            type='text'
+            value={this.input}
+            onChange={this.handleInput}
+            placeholder='Search Github User...'
+          />
+          <button className='searchBtn' onClick={this.handleSubmit}>
+            Search
+          </button>
+        </form>
 
-        {this.state.followers.map((follower) => (
-          <Follower key={follower.id} follower={follower} />
-        ))}
+        <div>
+          <User user={this.state.user} />
+
+          <h4>Followers:</h4>
+          {this.state.followers.map((follower) => (
+            <Follower key={follower.id} follower={follower} />
+          ))}
+        </div>
       </div>
     );
   }
